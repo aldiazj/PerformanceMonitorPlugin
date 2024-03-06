@@ -48,7 +48,6 @@ public class PerformanceMonitor {
                 }
             }
             
-            // Deallocate the memory allocated by task_threads
             vm_deallocate(mach_task_self_, vm_address_t(bitPattern: threadsList), vm_size_t(threadsCount * UInt32(MemoryLayout<thread_act_t>.stride)))
         }
         
@@ -69,8 +68,7 @@ public class PerformanceMonitor {
         }
         
         if kerr == KERN_SUCCESS {
-            // Resident size is in info.resident_size; convert to MB
-            return Double(info.resident_size) / 1024 / 1024
+             return Double(info.resident_size) / 1024 / 1024
         } else {
             print("Error with task_info(): \(kerr)")
             return 0.0
@@ -79,7 +77,7 @@ public class PerformanceMonitor {
     
     private func getCurrentGPUUsage() -> Double {
         // This is a placeholder. Actual GPU monitoring is significantly limited on iOS.
-        // You might want to look into specific metrics or indirect ways to gauge GPU usage.
+        // And To the moment of this submission, I couldn't find a way to measure it.
         return 0.0
     }
     
@@ -100,8 +98,8 @@ public class PerformanceMonitor {
         let avg = data.isEmpty ? 0.0 : data.reduce(0, +) / Double(data.count)
         
         let percentileIndex = Int(ceil(0.95 * Double(sortedData.count))) - 1
-        let safeIndex = Swift.min(percentileIndex, sortedData.count - 1) // Ensure the index is not beyond the array length
-        let finalIndex = Swift.max(0, safeIndex) // Ensure the index is not negative
+        let safeIndex = Swift.min(percentileIndex, sortedData.count - 1)
+        let finalIndex = Swift.max(0, safeIndex)
         let percentile95 = percentileIndex >= 0 ? sortedData[finalIndex] : 0.0
         
         return (min, max, avg, percentile95)
