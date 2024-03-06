@@ -1,0 +1,11 @@
+framework module PerformanceMonitor {
+  umbrella header "PerformanceMonitor.h"
+  export *
+
+  module * { export * }
+}
+
+module PerformanceMonitor.Swift {
+  header "PerformanceMonitor-Swift.h"
+  requires objc
+}
